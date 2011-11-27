@@ -136,7 +136,7 @@ function prepareUI() {
 	peopleSpan.innerHTML="From People";
 	filterBox.appendChild(peopleSpan);
 	var peopleFilterBox = document.createElement("input");
-	peopleFilterBox.setAttribute("type", "text")
+	peopleFilterBox.setAttribute("type", "text");
 	peopleFilterBox.setAttribute("title", "Filter tweets from People.Use comma as a separator.");
 	peopleFilterBox.addEventListener("keypress", suppressKeyStroke, true);
 	peopleFilterBox.addEventListener("keydown", suppressKeyStroke, true);
@@ -227,7 +227,10 @@ function suppressKeyStroke(event) {
 }
 
 var state = "closed";
-function toggleFilterBox() {
+function toggleFilterBox(e) {
+    if (e != null)
+        e.preventDefault();
+    e.cancelBubble=true;
 	if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
 		// Need to take this approach as unsafeWindow is not available on Chrome
 		// Reference: http://code.google.com/p/chromium/issues/detail?id=18857
@@ -248,7 +251,7 @@ function toggleFilterBox() {
 			filterBox.style.display = "none";
 			state = "closed";
 		}
-		return ;
+		return false;
 	}
 	
 	$ = unsafeWindow.$;
@@ -268,6 +271,7 @@ function toggleFilterBox() {
 			.slideUp(100);
 		state = "closed";
 	}
+    return false;
 }
 
 function clearFilters () {
@@ -295,7 +299,7 @@ function clearFilters () {
 	var caseSensitive = chkCase.checked;
 	var removeLinks = chkLink.checked;
 	
-	var statuses = document.evaluate(".//*[@class='stream-items']/div", document, null, XPathResult.ANY_TYPE, null); 
+	var statuses = document.evaluate(".//*[@id='stream-items-id']/div", document, null, XPathResult.ANY_TYPE, null); 
 
 	// Cleaning the input
 	wordsStr = wordsStr.trim();
@@ -316,12 +320,16 @@ function clearFilters () {
 	while (status) {
 		var contentDOM = getElementByClass("tweet-text", status);
 		var content = (contentDOM.length > 0) ? contentDOM[0].textContent : "";
+        var contentHTML = (contentDOM.length > 0) ? contentDOM[0].innerHTML : "";
 		var fromDOM = getElementByClass("tweet-screen-name", status);
 		var from = (fromDOM.length > 0) ? fromDOM[0].textContent : "";
 		
 		if (content == null || content.length == 0)
 			content = "";
-		
+
+        if (contentHTML == null || contentHTML.length == 0)
+            contentHTML = "";
+
 		if (from == null || from.length == 0)
 			from = "";
 		
@@ -335,8 +343,8 @@ function clearFilters () {
 		var found = false;
 		// Filter out tweets with links
 		if (removeLinks) {
-			var lowerContent = content.toLowerCase();
-			if (lowerContent.indexOf("http://") != -1 || lowerContent.indexOf("https://") != -1 || lowerContent.indexOf("www.") != -1)
+			var lowerContent = contentHTML.toLowerCase();
+			if (lowerContent.indexOf("http://") != -1 || lowerContent.indexOf("https://") != -1 || lowerContent.indexOf("www.") != -1 || lowerContent.indexOf("t.co") != -1)
 				found = true;
 		}
 		

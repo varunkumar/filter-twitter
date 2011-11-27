@@ -2,7 +2,7 @@ Filter Tweets
 =============
 Script for filtering tweets about a specific topic.
 
-Current version: 1.1
+Current version: 1.1.1
 
 Hosted at: http://userscripts.org/scripts/show/87289, http://services.varunkumar.me/filter_tweets.user.js_
 
@@ -39,4 +39,4 @@ The source code is available [here](https://github.com/varunkumar/filter-twitter
 
 -- [Varun](http://www.varunkumar.me)
 
-Last Modified: Sun Oct 02 12:47:36 IST 2011
+Last Modified: Sun Nov 27 17:40:36 IST 2011
