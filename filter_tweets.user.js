@@ -4,7 +4,7 @@
 // @description    Script for filtering tweets about a specific topic. Works only with #NewTwitter
 // @include        http://*twitter.com/*
 // @include        https://*twitter.com/*
-// @version        1.1
+// @version        1.1.2
 // @author         Varunkumar Nagarajan
 // ==/UserScript==
 
@@ -92,16 +92,16 @@ prepareUI();
 
 //=================UI Methods=============================	
 function prepareUI() {
-	if (document.getElementById("global-nav-messages") == null) {
-		// user has not signed in do nothing
+	if (document.getElementById("global-actions") == null) {
+		// user has not signed in, do nothing
 		return ; 
 	}
 	
-	screenName = document.getElementById("screen-name").textContent;
+	screenName = document.querySelector(".current-user .account-group").getAttribute("data-screen-name");
 	screenName = screenName.trim();
 	
 	// Adding the Filters menu
-	var menu = document.getElementById("global-nav-messages").parentNode;
+	var menu = document.getElementById("global-actions");
 	
 	var list = document.createElement("li");
 	list.setAttribute("id", "global-nav-filters")
@@ -113,24 +113,25 @@ function prepareUI() {
 	anchor.innerHTML = "Filters";
 	list.appendChild(anchor);
 	
-	menu.insertBefore(list, document.getElementById("global-nav-messages"));
+    menu.appendChild(list);
+    // menu.insertBefore(list, document.getElementById("global-nav-messages"));
 	
 	// Preparing the filter box
 	var filterBox = document.createElement('div');
 	filterBox.id = 'divFilterBox';
 	document.body.appendChild(filterBox);
-	filterBox.setAttribute("style","-moz-border-radius-bottomleft: 5px;-webkit-border-bottom-left-radius: 5px;-moz-border-radius-bottomright: 5px;-webkit-border-bottom-right-radius: 5px;-moz-border-radius-topright: 10px;-webkit-border-top-right-radius: 10px;background-color:#000000;border:1px none transparent;color:#BABABA;display:none;font-size:12px;margin-right:0;margin-top:6px;padding:12px;position:absolute;right:0;text-align:left;top:34px;left:100px;width:210px;z-index:100;opacity:.9");
+	filterBox.setAttribute("style","-moz-border-radius-bottomleft: 5px;-webkit-border-bottom-left-radius: 5px;-moz-border-radius-bottomright: 5px;-webkit-border-bottom-right-radius: 5px;-moz-border-radius-topright: 10px;-webkit-border-top-right-radius: 10px;background-color:#000000;border:1px none transparent;color:#BABABA;display:none;font-size:12px;margin-right:0;margin-top:6px;padding:12px;position:absolute;right:0;text-align:left;top:34px;left:100px;width:220px;z-index:100;opacity:.9");
 	filterBox.innerHTML = "<b>Use this form to filter out tweets</b>";
 	
 	// Close Button
-	var closeButton  = document.createElement("div");
+	/* var closeButton  = document.createElement("div");
 	closeButton.setAttribute("class", 'twttr-dialog-close');
 	closeButton.addEventListener("click", toggleFilterBox, false);
 	closeButton.innerHTML = "<b>x</b>";
-	filterBox.appendChild(closeButton);
+	filterBox.appendChild(closeButton);*/
 	filterBox.appendChild(document.createElement("br"));
 	filterBox.appendChild(document.createElement("br"));
-	
+
 	// People filter
 	var peopleSpan = document.createElement("span");
 	peopleSpan.innerHTML="From People";
@@ -142,7 +143,7 @@ function prepareUI() {
 	peopleFilterBox.addEventListener("keydown", suppressKeyStroke, true);
 	peopleFilterBox.setAttribute("id", "txtFrom");
 	peopleFilterBox.setAttribute("value", GM_getValue(screenName + "PeopleFilters", ""));
-	peopleFilterBox.setAttribute("style", "-moz-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); -webkit-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); border: 1px solid #CCCCCC; border-color: rgba(82, 168, 236, 0.75) !important; -moz-border-radius: 2px; -webkit-border-radius: 5px; height:20px;width:100%");
+	peopleFilterBox.setAttribute("style", "-moz-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); -webkit-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); border: 1px solid #CCCCCC; border-color: rgba(82, 168, 236, 0.75) !important; -moz-border-radius: 2px; -webkit-border-radius: 5px; height:20px;");
 	filterBox.appendChild(peopleFilterBox);
 	filterBox.appendChild(document.createElement("br"));
 	filterBox.appendChild(document.createElement("br"));
@@ -158,7 +159,7 @@ function prepareUI() {
 	wordsFilterBox.addEventListener("keydown", suppressKeyStroke, true);
 	wordsFilterBox.setAttribute("id","txtWords");
 	wordsFilterBox.setAttribute("value", GM_getValue(screenName + "WordsFilters", ""));
-	wordsFilterBox.setAttribute("style", "-moz-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); -webkit-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); border: 1px solid #CCCCCC; border-color: rgba(82, 168, 236, 0.75) !important; -moz-border-radius: 2px; -webkit-border-radius: 5px; height:20px;width:100%");
+	wordsFilterBox.setAttribute("style", "-moz-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); -webkit-box-shadow: 0 0 8px rgba(82, 168, 236, 0.5); border: 1px solid #CCCCCC; border-color: rgba(82, 168, 236, 0.75) !important; -moz-border-radius: 2px; -webkit-border-radius: 5px; height:20px;");
 	filterBox.appendChild(wordsFilterBox);
 	filterBox.appendChild(document.createElement("br"));
 	filterBox.appendChild(document.createElement("br"));
@@ -321,7 +322,7 @@ function clearFilters () {
 		var contentDOM = getElementByClass("tweet-text", status);
 		var content = (contentDOM.length > 0) ? contentDOM[0].textContent : "";
         var contentHTML = (contentDOM.length > 0) ? contentDOM[0].innerHTML : "";
-		var fromDOM = getElementByClass("tweet-screen-name", status);
+		var fromDOM = getElementByClass("username", status);
 		var from = (fromDOM.length > 0) ? fromDOM[0].textContent : "";
 		
 		if (content == null || content.length == 0)
