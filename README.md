@@ -4,8 +4,6 @@ Script for filtering tweets about a specific topic.
 
 Current version: 1.1.3
 
-Hosted at: http://userscripts.org/scripts/show/87289, http://services.varunkumar.me/filter_tweets.user.js_
-
 For more information: http://blog.varunkumar.me/2010/10/how-to-filter-out-tweets-on-new-twitter.html
 
 How to use?
