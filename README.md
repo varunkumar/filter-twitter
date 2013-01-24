@@ -2,7 +2,7 @@ Filter Tweets
 =============
 Script for filtering tweets about a specific topic.
 
-Current version: 1.1.2
+Current version: 1.1.3
 
 Hosted at: http://userscripts.org/scripts/show/87289, http://services.varunkumar.me/filter_tweets.user.js_
 
@@ -35,8 +35,8 @@ ChangeLog
 
 How to Contribute?
 ------------------
-The source code is available [here](https://github.com/varunkumar/filter-twitter) under MIT licence. Please send any bugs, feedback, complaints, patches about the extension to me at varunkumar[dot]n[at]gmail[dot]com.
+The source code is available [here](https://github.com/varunkumar/filter-twitter) under [MIT license](http://varunkumar.mit-license.org). Please send any bugs, feedback, complaints, patches about the extension to me at varunkumar[dot]n[at]gmail[dot]com.
 
 -- [Varun](http://www.varunkumar.me)
 
-Last Modified: Sun Feb 12 19:38:36 IST 2011
+Last Modified: Thu Jan 24 09:48:36 IST 2013

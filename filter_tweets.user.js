@@ -4,7 +4,7 @@
 // @description    Script for filtering tweets about a specific topic. Works only with #NewTwitter
 // @include        http://*twitter.com/*
 // @include        https://*twitter.com/*
-// @version        1.1.2
+// @version        1.1.3
 // @author         Varunkumar Nagarajan
 // ==/UserScript==
 
