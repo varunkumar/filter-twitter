@@ -321,8 +321,8 @@ function clearFilters () {
     var status = statuses.iterateNext(); 
     while (status) {
         var contentDOM = getElementByClass("tweet-text", status);
-        var content = (contentDOM.length > 0) ? contentDOM[0].textContent : "";
-        var contentHTML = (contentDOM.length > 0) ? contentDOM[0].innerHTML : "";
+        var content = (contentDOM.length == 1) ? contentDOM[0].textContent : (contentDOM.length == 2) ? contentDOM[1].textContent : "";
+        var contentHTML = (contentDOM.length == 1) ? contentDOM[0].innerHTML : (contentDOM.length == 2) ? contentDOM[1].innerHTML : "";
         var fromDOM = getElementByClass("username", status);
         var from = (fromDOM.length > 0) ? fromDOM[0].textContent : "";
         
