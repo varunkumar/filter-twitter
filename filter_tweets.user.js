@@ -301,7 +301,7 @@ function clearFilters () {
     var caseSensitive = chkCase.checked;
     var removeLinks = chkLink.checked;
     
-    var statuses = document.evaluate("//*[@id='stream-items-id']/li/div", document, null, XPathResult.ANY_TYPE, null); 
+    var statuses = document.evaluate("//*[@id='stream-items-id']/li/div|//*[@id='stream-items-id']/li/ol", document, null, XPathResult.ANY_TYPE, null);
 
     // Cleaning the input
     wordsStr = wordsStr.trim();
@@ -321,76 +321,79 @@ function clearFilters () {
     var status = statuses.iterateNext(); 
     while (status) {
         var contentDOM = getElementByClass("tweet-text", status);
-        var content = (contentDOM.length == 1) ? contentDOM[0].textContent : (contentDOM.length == 2) ? contentDOM[1].textContent : "";
-        var contentHTML = (contentDOM.length == 1) ? contentDOM[0].innerHTML : (contentDOM.length == 2) ? contentDOM[1].innerHTML : "";
-        var fromDOM = getElementByClass("username", status);
-        var from = (fromDOM.length > 0) ? fromDOM[0].textContent : "";
-        
-        if (content == null || content.length == 0)
-            content = "";
-
-        if (contentHTML == null || contentHTML.length == 0)
-            contentHTML = "";
-
-        if (from == null || from.length == 0)
-            from = "";
-        
-        if (!caseSensitive) {
-            content = content.toLowerCase();
-            from = from.toLowerCase();
-        }
-        
-        var wordFilters = wordsStr.split(",");
-            
         var found = false;
-        // Filter out tweets with links
-        if (removeLinks) {
-            var lowerContent = contentHTML.toLowerCase();
-            if (lowerContent.indexOf("http://") != -1 || lowerContent.indexOf("https://") != -1 || lowerContent.indexOf("www.") != -1 || lowerContent.indexOf("t.co") != -1)
-                found = true;
-        }
-        
-        // Words filter
-        if (!found) {
-            for (var i = 0; i < wordFilters.length; i++) {
-                var filter = wordFilters[i].trim();
-                if (filter == "")
-                    continue;
-                
-                if (!caseSensitive)
-                    filter = filter.toLowerCase();
-                
-                if (content.indexOf(filter) != -1) {
-                    found = true;
-                    break;
-                } 
+        for (var i = 0; i < contentDOM.length; i++) {
+            var content = contentDOM[i].textContent;
+            var contentHTML = contentDOM[i].innerHTML;
+            var fromDOM = getElementByClass("username", status);
+            var from = (fromDOM.length > 0) ? fromDOM[0].textContent : "";
+
+            if (content == null || content.length == 0)
+                content = "";
+
+            if (contentHTML == null || contentHTML.length == 0)
+                contentHTML = "";
+
+            if (from == null || from.length == 0)
+                from = "";
+
+            if (!caseSensitive) {
+                content = content.toLowerCase();
+                from = from.toLowerCase();
             }
-        }
-        
-        // From filter
-        if (!found) {
-            var fromFilters = fromStr.split(",");
-            for (i = 0; i < fromFilters.length; i++) {
-                var filter = fromFilters[i].trim();
-                if (filter == "")
-                    continue;
-                
-                if (!caseSensitive)
-                    filter = filter.toLowerCase();
-                
-                if (from.indexOf(filter) != -1) {
+
+            var wordFilters = wordsStr.split(",");
+
+            // Filter out tweets with links
+            if (removeLinks) {
+                var lowerContent = contentHTML.toLowerCase();
+                if (lowerContent.indexOf("http://") != -1 || lowerContent.indexOf("https://") != -1 || lowerContent.indexOf("www.") != -1 || lowerContent.indexOf("t.co") != -1)
                     found = true;
-                    break;
+            }
+
+            // Words filter
+            if (!found) {
+                for (var j = 0; j < wordFilters.length; j++) {
+                    var filter = wordFilters[j].trim();
+                    if (filter == "")
+                        continue;
+
+                    if (!caseSensitive)
+                        filter = filter.toLowerCase();
+
+                    if (content.indexOf(filter) != -1) {
+                        found = true;
+                        break;
+                    } 
                 }
             }
+
+            // From filter
+            if (!found) {
+                var fromFilters = fromStr.split(",");
+                for (j = 0; j < fromFilters.length; j++) {
+                    var filter = fromFilters[j].trim();
+                    if (filter == "")
+                        continue;
+
+                    if (!caseSensitive)
+                        filter = filter.toLowerCase();
+
+                    if (from.indexOf(filter) != -1) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (found) break;
         }
-        
+
         if (found) {
             matchedStatuses.push(status);
         } else {
             unmatchedStatuses.push(status);
         }
-            
+
         status = statuses.iterateNext();
     }
 
